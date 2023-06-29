@@ -3,6 +3,7 @@ RUN apt update && apt -y install openssh-server python3
 RUN mkdir -p -m 600 /root/.ssh /run/sshd
 COPY *.pub /root/.ssh
 RUN cat /root/.ssh/id_rsa.pub > /root/.ssh/authorized_keys &&\
+    cat /root/.ssh/jenkins.pub >> /root/.ssh/authorized_keys &&\
     echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
 EXPOSE 22 80
 CMD ["/usr/sbin/sshd", "-D"]
