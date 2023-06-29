@@ -1,0 +1,56 @@
+version: '3.9'
+services:
+  front:
+    build:
+      context: .
+      dockerfile: Dockerfile_fr
+    container_name: front
+    hostname: frontend
+    ports:
+      - "80:80"
+      - "22"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 200M
+    networks:
+      - web-app
+  backend_1:
+    build:
+      context: .
+      dockerfile: Dockerfile_srv1
+    container_name: back1
+    hostname: backend_3
+    ports:
+      - "8888:8888"
+      - "22"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 200M
+    networks:
+      - web-app
+  backend_2:
+    build:
+      context: .
+      dockerfile: Dockerfile_srv2
+    container_name: back2
+    hostname: backend_2
+    ports:
+      - "8899:8899"
+      - "22"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 200M
+    networks:
+      - web-app
+networks:
+  web-app:
+    driver: bridge

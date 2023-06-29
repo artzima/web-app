@@ -1,0 +1,10 @@
+FROM httpd:2.4.57
+RUN apt update && apt -y install openssh-server supervisor
+RUN mkdir -p -m 600 /root/.ssh /run/sshd /run/apache2
+COPY id_rsa.pub /root/.ssh
+COPY index.html /usr/local/apache2/htdocs/index.html
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+RUN cat /root/.ssh/id_rsa.pub > /root/.ssh/authorized_keys &&\
+    echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
+EXPOSE 80 22
+CMD ["/usr/bin/supervisord"]

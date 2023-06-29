@@ -1,0 +1,63 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+    <h1>CALCULATOR ver.2</h1>
+    <label for="number1">Number 1:</label>
+    <input type="number" id="number1"><br>
+    <label for="number2">Number 2:</label>
+    <input type="number" id="number2"><br>
+    <button onclick="addition()">+</button><br>
+    <button onclick="mult()">*</button><br>
+    <label for="result">Calculation:</label>
+    <input type="text" id="result">
+    
+    <script>
+        function addition() {
+            var number1 = parseInt(document.getElementById("number1").value);
+            var number2 = parseInt(document.getElementById("number2").value);
+            
+            var socket = new WebSocket("ws://localhost:8888");
+            
+            socket.onopen = function(event) {
+                var data = {
+                    "number1": number1,
+                    "number2": number2
+                };
+                
+                socket.send(JSON.stringify(data));
+            };
+            
+            socket.onmessage = function(event) {
+                var result = JSON.parse(event.data).result;
+                document.getElementById("result").value = result;
+                socket.close();
+            };
+        }
+        function mult() {
+            var number1 = parseInt(document.getElementById("number1").value);
+            var number2 = parseInt(document.getElementById("number2").value);
+            
+            var socket = new WebSocket("ws://localhost:8899");
+            
+            socket.onopen = function(event) {
+                var data = {
+                    "number1": number1,
+                    "number2": number2
+                };
+                
+                socket.send(JSON.stringify(data));
+            };
+            
+            socket.onmessage = function(event) {
+                var result = JSON.parse(event.data).result;
+                document.getElementById("result").value = result;
+                socket.close();
+            };
+        }
+    </script>
+</body>
+</html>

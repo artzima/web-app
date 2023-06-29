@@ -1,0 +1,27 @@
+---
+- name: Install Apache and upload index.html
+  hosts: front
+  vars:
+    index_path: /var/www/html/
+
+  tasks:
+    - name: Install Apache
+      apt:
+        name: apache2
+        state: latest
+
+    - name: Copy index.html into the container
+      copy:
+        src: ./index.html
+        dest: "{{ index_path }}"
+      notify:
+        - restart apache2
+
+    - name: Start apache2
+      shell:
+        "/etc/init.d/apache2 start"
+
+  handlers:
+    - name: restart apache2
+      shell:
+        "/etc/init.d/apache2 reload"

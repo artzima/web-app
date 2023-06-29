@@ -1,0 +1,30 @@
+pipeline {
+    agent { 
+        label 'master'
+        }
+    triggers { pollSCM('* * * * *') }
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
+        timestamps()
+        skipDefaultCheckout(true)
+    }
+    stages {
+        stage("App deploy") {
+            steps {
+                git 'https://github.com/artzima/web-app.git'
+                sh '''
+                    cd ./task2
+                    docker compose up -d
+                '''
+            }
+        }
+        stage("Ansible playbook execution") {
+            steps {
+                sh '''
+		  cd ./task2
+		  ansible-playbook apache-install.yaml
+		'''
+            }
+        }
+    }
+}

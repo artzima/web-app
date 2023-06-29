@@ -1,0 +1,22 @@
+pipeline {
+    agent { 
+        label 'master'
+        }
+    triggers { pollSCM('* * * * *') }
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
+        timestamps()
+        skipDefaultCheckout(true)
+    }
+    stages {
+        stage("App deploy") {
+            steps {
+                git 'https://github.com/artzima/web-app.git'
+                sh '''
+                    cd ./task1
+                    docker compose up -d
+                '''
+            }
+        }
+    }
+}

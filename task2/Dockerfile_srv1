@@ -1,0 +1,12 @@
+FROM debian:11-slim
+RUN apt update && apt -y install openssh-server supervisor python3 python3-pip
+RUN mkdir -p -m 600 /root/.ssh /run/sshd &&\
+    pip install websockets
+COPY id_rsa.pub /root/.ssh
+COPY supervisord1.conf /etc/supervisor/conf.d/supervisord.conf
+RUN cat /root/.ssh/id_rsa.pub > /root/.ssh/authorized_keys &&\
+    echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
+WORKDIR /app
+COPY server1.py .
+EXPOSE 8888 22
+CMD ["/usr/bin/supervisord"]
